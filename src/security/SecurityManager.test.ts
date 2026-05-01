@@ -16,15 +16,15 @@ vi.mock('./SessionGuard', () => ({
 
 vi.mock('./RateLimiter', () => ({
   RateLimiter: {
-    checkPreset: vi.fn().mockReturnValue({ allowed: true, retryAfterMs: 0 }),
-    getAnalytics: vi.fn().mockReturnValue({ blockRate: 0 }),
+    checkPreset: vi.fn().mockReturnValue({ allowed: true, remaining: 10, retryAfterMs: 0 }),
+    getAnalytics: vi.fn().mockReturnValue({ totalRequests: 0, totalBlocked: 0, blockRate: 0 }),
   }
 }));
 
 vi.mock('./InputValidator', () => ({
   InputValidator: {
     validate: vi.fn().mockReturnValue({ isValid: true, sanitized: 'clean', threats: [] }),
-    getThreatStats: vi.fn().mockReturnValue({ total: 0, bySeverity: { critical: 0 } }),
+    getThreatStats: vi.fn().mockReturnValue({ total: 0, bySeverity: {}, byType: {}, last24h: 0 }),
   }
 }));
 
@@ -35,10 +35,10 @@ describe('SecurityManager', () => {
     vi.mocked(SessionGuard.initialize).mockResolvedValue(undefined);
     vi.mocked(SessionGuard.validateSession).mockResolvedValue(true);
     vi.mocked(SessionGuard.getSession).mockReturnValue({ isValid: true, sessionId: 'test', startTime: 0, lastActivity: 0, deviceFingerprint: 'test', ipHash: 'test' } as any);
-    vi.mocked(RateLimiter.checkPreset).mockReturnValue({ allowed: true, retryAfterMs: 0 });
-    vi.mocked(RateLimiter.getAnalytics).mockReturnValue({ blockRate: 0 });
+    vi.mocked(RateLimiter.checkPreset).mockReturnValue({ allowed: true, remaining: 10, retryAfterMs: 0 });
+    vi.mocked(RateLimiter.getAnalytics).mockReturnValue({ totalRequests: 0, totalBlocked: 0, blockRate: 0 });
     vi.mocked(InputValidator.validate).mockReturnValue({ isValid: true, sanitized: 'clean', threats: [] });
-    vi.mocked(InputValidator.getThreatStats).mockReturnValue({ total: 0, bySeverity: { critical: 0 } });
+    vi.mocked(InputValidator.getThreatStats).mockReturnValue({ total: 0, bySeverity: {}, byType: {}, last24h: 0 });
   });
 
   it('should initialize correctly', async () => {
@@ -57,7 +57,7 @@ describe('SecurityManager', () => {
 
   it('should handle rate limited input', () => {
     // Override mock for this test
-    vi.mocked(RateLimiter.checkPreset).mockReturnValue({ allowed: false, retryAfterMs: 5000 });
+    vi.mocked(RateLimiter.checkPreset).mockReturnValue({ allowed: false, remaining: 0, retryAfterMs: 5000 });
     
     const result = SecurityManager.validateInput('spam');
     expect(result.isValid).toBe(false);

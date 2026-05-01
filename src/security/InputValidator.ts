@@ -3,12 +3,21 @@
  * All user-facing inputs should pass through this validator.
  */
 
+/**
+ * Result of an input validation process.
+ */
 export interface ValidationResult {
+  /** Whether the input is considered safe. */
   isValid: boolean;
+  /** The sanitized version of the input string. */
   sanitized: string;
+  /** List of detected threats, if any. */
   threats: ThreatReport[];
 }
 
+/**
+ * Detailed report for a detected security threat.
+ */
 export interface ThreatReport {
   type: 'xss' | 'sql_injection' | 'command_injection' | 'prompt_injection' | 'data_exfiltration' | 'suspicious_pattern';
   severity: 'low' | 'medium' | 'high' | 'critical';
