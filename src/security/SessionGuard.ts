@@ -120,7 +120,7 @@ export class SessionGuard {
       this.logAnomaly('session_locked', reason);
     }
     if (this.idleTimer) clearTimeout(this.idleTimer);
-    this.onLockCallbacks.forEach(cb => { try { cb(); } catch {} });
+    this.onLockCallbacks.forEach(cb => { try { cb(); } catch (e) { /* ignore callback errors */ } });
   }
 
   private static logAnomaly(type: string, detail: string): void {

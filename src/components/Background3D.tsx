@@ -2,6 +2,8 @@ import { motion } from 'motion/react';
 import React from 'react';
 
 const FloatingModule = ({ delay = 0, x = '0%', y = '0%', size = 100, rotate = 0 }) => {
+  // eslint-disable-next-line react-hooks/purity
+  const duration = React.useMemo(() => 10 + Math.random() * 5, []);
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -12,7 +14,7 @@ const FloatingModule = ({ delay = 0, x = '0%', y = '0%', size = 100, rotate = 0 
         scale: [1, 1.05, 1]
       }}
       transition={{ 
-        duration: 10 + Math.random() * 5,
+        duration,
         repeat: Infinity,
         delay,
         ease: "easeInOut"

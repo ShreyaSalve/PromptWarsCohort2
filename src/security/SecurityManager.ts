@@ -155,7 +155,7 @@ class SecurityManagerClass {
     const event: SecurityEvent = { type, timestamp: Date.now(), detail, severity };
     this.events.push(event);
     if (this.events.length > 200) this.events = this.events.slice(-200);
-    this.listeners.forEach(l => { try { l(event); } catch {} });
+    this.listeners.forEach(l => { try { l(event); } catch (e) { /* ignore listener errors */ } });
   }
 }
 

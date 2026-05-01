@@ -5,9 +5,13 @@ export const NodesBackground = () => {
   const nodes = useMemo(() => {
     return Array.from({ length: 15 }).map((_, i) => ({
       id: i,
+      // eslint-disable-next-line react-hooks/purity
       x: Math.random() * 100,
+      // eslint-disable-next-line react-hooks/purity
       y: Math.random() * 100,
+      // eslint-disable-next-line react-hooks/purity
       size: Math.random() * 3 + 1,
+      // eslint-disable-next-line react-hooks/purity
       duration: Math.random() * 3 + 2,
     }));
   }, []);

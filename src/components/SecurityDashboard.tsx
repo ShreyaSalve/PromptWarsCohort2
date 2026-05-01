@@ -24,8 +24,8 @@ const HEALTH_CONFIG = {
 };
 
 export const SecurityDashboard = ({ onClose }: { onClose: () => void }) => {
-  const [status, setStatus] = useState<SecurityStatus | null>(null);
-  const [events, setEvents] = useState<SecurityEvent[]>([]);
+  const [status, setStatus] = useState<SecurityStatus | null>(() => SecurityManager.getStatus());
+  const [events, setEvents] = useState<SecurityEvent[]>(() => SecurityManager.getEvents().slice(-30).reverse());
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'session' | 'test'>('overview');
   const [testInput, setTestInput] = useState('');
   const [testResult, setTestResult] = useState<any>(null);
@@ -37,7 +37,6 @@ export const SecurityDashboard = ({ onClose }: { onClose: () => void }) => {
   }, []);
 
   useEffect(() => {
-    refresh();
     const interval = setInterval(refresh, 2000);
     const unsub = SecurityManager.onEvent(() => refresh());
     return () => { clearInterval(interval); unsub(); };
